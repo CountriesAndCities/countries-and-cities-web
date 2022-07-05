@@ -33,7 +33,7 @@ jobs:
       - name: Building project
         run: | 
           npm run build
-          ls build
+          tree
 
       # - name: Copy files to the dev s3
       #   run: |
