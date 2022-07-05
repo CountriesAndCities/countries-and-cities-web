@@ -33,11 +33,11 @@ jobs:
       - name: Building project
         run: | 
           npm run build
-          tree
+          tree build
 
-      # - name: Copy files to the dev s3
-      #   run: |
-      #     aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+      - name: Copy files to the dev s3
+        run: |
+          aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
 
       # - name: cloudfront cache invalidation
       #   run: |
