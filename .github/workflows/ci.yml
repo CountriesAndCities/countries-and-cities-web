@@ -2,7 +2,7 @@ name: dev-build-and-deploy
 on:
   push:
     branches:
-      - pipeline-test
+      - master
 jobs:
   build-and-deploy:
     name: Build and Deploy
