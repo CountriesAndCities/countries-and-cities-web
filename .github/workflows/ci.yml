@@ -11,6 +11,7 @@ jobs:
       BUCKET: countries-poc.aws.cfainstitute.org
       DIST: build
       DIST_ID: E8YZLBY87OKAS
+      CI: true
     steps:
       - name: Checking out code
         uses: actions/checkout@v3
