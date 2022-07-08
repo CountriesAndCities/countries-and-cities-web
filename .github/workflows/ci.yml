@@ -4,8 +4,8 @@ on:
     branches:
       - master
 jobs:
-  build-and-deploy:
-    name: Build and Deploy
+  build-and-deploy-to-dev:
+    name: Build and Deploy to dev
     runs-on: ubuntu-latest
     env:
       BUCKET: countries-poc.aws.cfainstitute.org
@@ -34,6 +34,10 @@ jobs:
         run: | 
           npm run build
           tree build
+
+      - name: Run tests
+        run: |
+          npm test
 
       - name: Copy files to the dev s3
         run: |
