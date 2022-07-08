@@ -12,6 +12,8 @@ jobs:
       DIST: build
       DIST_ID: E8YZLBY87OKAS
       CI: true
+    outputs:
+      status: ${{ steps.tests.outcome }}
     steps:
       - name: Checking out code
         uses: actions/checkout@v3
@@ -36,9 +38,10 @@ jobs:
           npm run build
           tree build
 
-      - name: Run tests
-        run: |
-          npm test
+      # - name: Run tests
+      #   run: |
+      #     npm test
+      #   id: tests
 
       - name: Copy files to the dev s3
         run: |
@@ -49,3 +52,34 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.DIST_ID }} \
             --paths "/*" 
+
+  build-and-deploy-to-test:
+    name: Build and Deploy to test
+    needs: build-and-deploy-to-dev
+    runs-on: ubuntu-latest
+    env:
+      BUCKET: countries-and-cities-ui
+      DIST: build
+      DIST_ID: E2292YAC8N7NTD
+      CI: true
+    steps:
+      - name: Checking out code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Installing Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Installing dependencies
+        run: |
+          echo "test"
+
+     
