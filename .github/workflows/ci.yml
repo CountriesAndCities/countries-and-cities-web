@@ -56,7 +56,7 @@ jobs:
   build-and-deploy-to-test:
     name: Build and Deploy to test
     needs: build-and-deploy-to-dev
-    if: needs.tests.outputs.status == 'success'
+    #if: needs.tests.outputs.status == 'success'
     environment: test
     runs-on: ubuntu-latest
     env:
