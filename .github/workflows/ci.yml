@@ -79,7 +79,26 @@ jobs:
           node-version: "16"
 
       - name: Installing dependencies
+        run: npm install
+
+      - name: Building project
+        run: | 
+          npm run build
+          tree build
+
+      # - name: Run tests
+      #   run: |
+      #     npm test
+      #   id: tests
+
+      - name: Copy files to the dev s3
         run: |
-          echo "test"
+          aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+
+      - name: cloudfront cache invalidation
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.DIST_ID }} \
+            --paths "/*"
 
      
