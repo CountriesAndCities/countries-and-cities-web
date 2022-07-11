@@ -36,7 +36,7 @@ jobs:
       - name: Building project
         run: | 
           npm run build
-          tree build
+          ls -la
 
       - name: Run tests
         run: |
