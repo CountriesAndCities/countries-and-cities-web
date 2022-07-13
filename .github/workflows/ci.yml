@@ -4,26 +4,17 @@ on:
     branches:
       - master
 jobs:
-  build-and-deploy-to-dev:
-    name: Build and Deploy to dev
+  build-and-test:
+    name: Build and test
     runs-on: ubuntu-latest
     env:
-      BUCKET: countries-poc.aws.cfainstitute.org
       DIST: build
-      DIST_ID: E8YZLBY87OKAS
       CI: true
     outputs:
       status: ${{ steps.tests.outcome }}
     steps:
       - name: Checking out code
         uses: actions/checkout@v3
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Installing Node.js
         uses: actions/setup-node@v3
@@ -45,9 +36,34 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: countries-and-cities-${{ github.sha }}
+          name: countries-and-cities
           path: build/
 
+
+  deploy-to-dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    env:
+      BUCKET: countries-poc.aws.cfainstitute.org
+      DIST: build
+      DIST_ID: E8YZLBY87OKAS
+      CI: true
+    steps: 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: countries-and-cities
+    
+      - name: Display structure of downloaded files
+        run: ls -R
+          
       # - name: Copy files to the dev s3
       #   run: |
       #     aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
@@ -58,9 +74,9 @@ jobs:
       #       --distribution-id ${{ env.DIST_ID }} \
       #       --paths "/*" 
 
-  build-and-deploy-to-test:
+  deploy-to-test:
     name: Build and Deploy to test
-    needs: build-and-deploy-to-dev
+    needs: deploy-to-dev
     if: needs.tests.outputs.status == 'success'
     environment: test
     runs-on: ubuntu-latest
