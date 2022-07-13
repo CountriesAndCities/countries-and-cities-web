@@ -64,18 +64,18 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
           
-      # - name: Copy files to the dev s3
-      #   run: |
-      #     aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+      - name: Copy files to the dev s3
+        run: |
+          aws s3 sync --delete . s3://${{ env.BUCKET }}
 
-      # - name: cloudfront cache invalidation
-      #   run: |
-      #     aws cloudfront create-invalidation \
-      #       --distribution-id ${{ env.DIST_ID }} \
-      #       --paths "/*" 
+      - name: cloudfront cache invalidation
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.DIST_ID }} \
+            --paths "/*" 
 
   deploy-to-test:
-    name: Build and Deploy to test
+    name: Deploy to test
     needs: deploy-to-dev
     if: needs.tests.outputs.status == 'success'
     environment: test
