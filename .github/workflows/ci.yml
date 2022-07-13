@@ -85,9 +85,6 @@ jobs:
       DIST_ID: E2292YAC8N7NTD
       CI: true
     steps:
-      - name: Checking out code
-        uses: actions/checkout@v3
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
