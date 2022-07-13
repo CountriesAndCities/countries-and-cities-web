@@ -38,20 +38,25 @@ jobs:
           npm run build
           ls -la
 
-      - name: Run tests
-        run: |
-          npm test
-        id: tests
+      # - name: Run tests
+      #   run: |
+      #     npm test
+      #   id: tests
 
-      - name: Copy files to the dev s3
-        run: |
-          aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: countries-and-cities-${{ github.sha }}
+          path: build/
 
-      - name: cloudfront cache invalidation
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ env.DIST_ID }} \
-            --paths "/*" 
+      # - name: Copy files to the dev s3
+      #   run: |
+      #     aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+
+      # - name: cloudfront cache invalidation
+      #   run: |
+      #     aws cloudfront create-invalidation \
+      #       --distribution-id ${{ env.DIST_ID }} \
+      #       --paths "/*" 
 
   build-and-deploy-to-test:
     name: Build and Deploy to test
