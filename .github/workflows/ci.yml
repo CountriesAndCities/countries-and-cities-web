@@ -1,4 +1,4 @@
-name: dev-build-and-deploy
+name: Countries and Cities FE
 on:
   push:
     branches:
@@ -29,10 +29,10 @@ jobs:
           npm run build
           ls -la
 
-      # - name: Run tests
-      #   run: |
-      #     npm test
-      #   id: tests
+      - name: Run tests
+        run: |
+          npm test
+        id: tests
 
       - uses: actions/upload-artifact@v2
         with:
@@ -43,7 +43,7 @@ jobs:
   deploy-to-dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
-    #if: needs.tests.outputs.status == 'success'
+    if: needs.tests.outputs.status == 'success'
     needs: build-and-test
     env:
       BUCKET: countries-poc.aws.cfainstitute.org
