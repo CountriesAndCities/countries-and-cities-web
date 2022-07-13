@@ -43,7 +43,7 @@ jobs:
   deploy-to-dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
-    if: needs.tests.outputs.status == 'success'
+    #if: needs.tests.outputs.status == 'success'
     needs: build-and-test
     env:
       BUCKET: countries-poc.aws.cfainstitute.org
